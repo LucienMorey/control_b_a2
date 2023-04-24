@@ -101,8 +101,7 @@ C=sys_dt.C;
 %% LQR design
 %tune your weighting matrices for your controller
 Q=diag([1 1 1 1]);
-R=[0.0290,    0.0002;
-   0.0002,    0.0000];
+R= 1;
 
 disp("LQR Gain Matrix: " + newline)
 [K,P]=dlqr(A,B,Q,R)
@@ -121,7 +120,8 @@ end
 
 %tune your weighting matrices for your Kalman Filter
 Qf=eye(n);
-Rf = eye(m); %The diagonal of matrix Rf is the sensores covariance
+Rf = [0.0290,    0.0002;
+   0.0002,    0.0000]; %The diagonal of matrix Rf is the sensores covariance
 
 [Pf,po_dt,Kf_t] = dare(A',C',Qf,Rf,[],[]);
 %Pf: Lyapunonv matrix for KF
