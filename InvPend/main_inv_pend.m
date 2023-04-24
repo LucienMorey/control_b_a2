@@ -15,7 +15,7 @@ clc
 clear;
 
 %% Simulation Settings
-SN = 12345678; %Insert here your student number
+SN = 12904090; %Insert here your student number
 
 Tf = 60;    %Simulation length
 
@@ -26,14 +26,14 @@ CL = 0;     % Enable closed-loop
 obs = 0;    % 0: without  Observer, i.e., -F*x
             % 1: with Observer, i.e., -F*x_hat
 
-noise = 0;  %Enable measurement output noise
+noise = 1;  %Enable measurement output noise
 
 controller = 1; %1: LQR
-                %2: MPC
+                %2:   MPC
                 
 N=1;            % Prediction Horizon (increase as required it)
 
-animation = 0;  % 1: Animate the inverter pendulum
+animation = 1;  % 1: Animate the inverter pendulum
 
 %% Input and State Constraints for MPC
 % not required for LQR
@@ -101,7 +101,8 @@ C=sys_dt.C;
 %% LQR design
 %tune your weighting matrices for your controller
 Q=diag([1 1 1 1]);
-R=1;
+R=[0.0290,    0.0002;
+   0.0002,    0.0000];
 
 disp("LQR Gain Matrix: " + newline)
 [K,P]=dlqr(A,B,Q,R)
