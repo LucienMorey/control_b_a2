@@ -21,7 +21,7 @@ Tf = 60;    %Simulation length
 
 Ts = 1/20;  %Sampling time for the controller
 
-CL = 0;     % Enable closed-loop
+CL = 1;     % Enable closed-loop
 
 obs = 0;    % 0: without  Observer, i.e., -F*x
             % 1: with Observer, i.e., -F*x_hat
@@ -100,8 +100,8 @@ C=sys_dt.C;
 
 %% LQR design
 %tune your weighting matrices for your controller
-Q=diag([1 1 1 1]);
-R= 1;
+Q=diag([0.0001 10 10 10]);
+R= 10;
 
 disp("LQR Gain Matrix: " + newline)
 [K,P]=dlqr(A,B,Q,R)
