@@ -82,7 +82,7 @@ Cc=[1 0 0 0;
 
 %% Controllability
 disp('*******************************')
-CM=rand(n,n);   %Compute this accordingly
+CM=ctrb(Ac,Bc);   %Compute this accordingly
 rank_CM = rank(CM);
 if (rank_CM==n)
     disp('System is Controllable')
@@ -112,7 +112,7 @@ eig_AK = eig(AK)'
 
 %% Steady-Sate Kalman Filter design
 disp(newline + "*******************************")
-OM=rand(n,n);   %Compute this accordingly
+OM=obsv(A,C);   %Compute this accordingly
 rank_OM=rank(OM);
 if (rank_OM==n)
     disp('System is Observable')
