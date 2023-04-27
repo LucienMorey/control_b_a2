@@ -70,15 +70,15 @@ n=4;    %Number of states
 m=1;    %number of inputs
 p=2;    %number of outputs
 
-Ac=[b  1   0   0
-   0  -Mc  0   0
-   0   0   mp  1
-   0   0   0   l];
+Ac=[0    1        0                    0
+    0   -b/Mc     -mp*g/Mc            0
+    0    0        0                    1
+    0   b/(Mc*l)   g*(mp + Mc)/(Mc*l)   0];
 
-Bc= [g g g g]';
+Bc= [0 1/Mc 0 -1/(Mc*l)]';
 
-Cc=[1 0 1 0;
-   1  1 0 0];
+Cc=[1 0 0 0;
+   0  0 1 0];
 
 %% Controllability
 disp('*******************************')
