@@ -46,3 +46,4 @@ disp('Plotting...')
 
 figure(101)
 %% Add you plots here
+plot(time,xc_n,"r-",time, xc, "bo");
