@@ -23,9 +23,17 @@ b=50;       %friction
 xo_hat=[2 0 0 2 0 0]';  
 
 %% Discrete time model
-A=rand(6,6);
+A = [1, Ts, 0.5*Ts^2, 0, 0,  0;
+     0, 1,  Ts,       0, 0,  0;
+     0, 0,  1,        0, 0,  0;
+     0, 0,  0,        1, Ts, 0.5*Ts^2;
+     0, 1,  Ts,       0, 0,  0;
+     0, 0,  1,        0, 0,  0];
 
-C=rand(4,6);
+C = [1, 0, 0, 0, 0, 0;
+     0, 1, 0, 0, 0, 0;
+     0, 0, 0, 1, 0, 0;
+     0, 0, 0, 0, 1, 0];
 
 %% Steady-State Kalman Filter Design
 Qf=eye(6)

@@ -24,14 +24,22 @@ b=50;   %friction
 xo_hat=[2 0 2 0]';  
 
 %% Discrete time model
-A=rand(4,4);
+% derived from kinematic equations
+% s = s_0 +v *delta_t + 0.5 * a * delta_t^2
+% v = u + a*delta_t
+% in discrete time, delta t is just Ts
+A = [1, Ts, 0, 0;
+     0, 1,  0, 0;
+     0, 0, 1, Ts;
+     0, 0,  0, 1];
 
-C=rand(2,4);
+C = [1, 0, 0, 0;
+     0, 0, 1, 0];
 
 %% Steady-State Kalman Filter Design
-Qf=eye(4)
+Qf=1e-3*eye(4);
 
-Rf=eye(2);
+Rf=diag([6.6294, 13.3776]);
 
 %
 [P,po_dt,Kf_t] = dare(A',C',Qf,Rf,[],[]);
@@ -46,4 +54,4 @@ disp('Plotting...')
 
 figure(101)
 %% Add you plots here
-plot(time,xc_n,"r-",time, xc, "bo");
+plot(xc,yc,"r-",xc_hat, yc_hat, "bo");
