@@ -27,8 +27,8 @@ A = [1, Ts, 0.5*Ts^2, 0, 0,  0;
      0, 1,  Ts,       0, 0,  0;
      0, 0,  1,        0, 0,  0;
      0, 0,  0,        1, Ts, 0.5*Ts^2;
-     0, 1,  Ts,       0, 0,  0;
-     0, 0,  1,        0, 0,  0];
+     0, 0,  0,       0, 1,  Ts;
+     0, 0,  0,        0, 0,  1];
 
 C = [1, 0, 0, 0, 0, 0;
      0, 1, 0, 0, 0, 0;
@@ -36,9 +36,9 @@ C = [1, 0, 0, 0, 0, 0;
      0, 0, 0, 0, 1, 0];
 
 %% Steady-State Kalman Filter Design
-Qf=eye(6)
+Qf = diag([0.5e-1, 1e-9, 1e-5, 0.5e-1, 1e-9, 1e-5]);
 
-Rf=eye(4);
+Rf = diag([220.9372, 0.1160, 769.0212, 0.4752]);
 
 
 [P,po_dt,Kf_t] = dare(A',C',Qf,Rf,[],[]);
@@ -54,3 +54,7 @@ disp('Plotting...')
 
 figure(111)
 %% Add you plots here
+plot(xc,yc,"r-",xc_hat, yc_hat, "bo");
+figure(112)
+plot(time, vx, "r-", time, vx_hat, "bo", time, vx_n, "kx");
+legend()
