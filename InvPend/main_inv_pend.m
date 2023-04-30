@@ -23,7 +23,7 @@ Ts = 1/20;  %Sampling time for the controller
 
 CL = 1;     % Enable closed-loop
 
-obs = 0;    % 0: without  Observer, i.e., -F*x
+obs = 1;    % 0: without  Observer, i.e., -F*x
             % 1: with Observer, i.e., -F*x_hat
 
 noise = 1;  %Enable measurement output noise
@@ -33,7 +33,7 @@ controller = 1; %1: LQR
                 
 N=1;            % Prediction Horizon (increase as required it)
 
-animation = 1;  % 1: Animate the inverter pendulum
+animation = 0;  % 1: Animate the inverter pendulum
 
 %% Input and State Constraints for MPC
 % not required for LQR
@@ -49,7 +49,7 @@ xmax=[10000;10000;theta_max;10000];       %Large number implies no constraint
 %% Initial Condition
 x_o = 0;                    %cart position 
 xsp_o = 0;                  %cart speed
-th_o = pi;                   %0: pendulum vertically pointing upwards
+th_o = 0;                   %0: pendulum vertically pointing upwards
                             %pi: pendulum vertically pointing downwards
 w_o = 0;                    %angular speed of the pendulum
 
@@ -61,7 +61,7 @@ disp("System Parameters" + newline)
 [Mc,mp,l,g,b] = MySysParam(SN)
 
 disp("Press any key to continue"+ newline)
-pause;  
+%pause;  
 
 %% Continupus-Time LTI Model
 % Please, all of you (especially Alberic)
@@ -100,8 +100,8 @@ C=sys_dt.C;
 
 %% LQR design
 %tune your weighting matrices for your controller
-Q=diag([0.0001 10 10 10]);
-R= 10;
+Q=diag([10 1 10 1]);
+R= 0.5;
 
 disp("LQR Gain Matrix: " + newline)
 [K,P]=dlqr(A,B,Q,R)
@@ -119,9 +119,8 @@ if (rank_OM==n)
 end
 
 %tune your weighting matrices for your Kalman Filter
-Qf=eye(n);
-Rf = [0.0290,    0.0002;
-   0.0002,    0.0000]; %The diagonal of matrix Rf is the sensores covariance
+Qf=diag([0.4, 1e-08, 1, 1e-08]);
+Rf = diag([0.0290, 1.2900e-06]); %The diagonal of matrix Rf is the sensores covariance
 
 [Pf,po_dt,Kf_t] = dare(A',C',Qf,Rf,[],[]);
 %Pf: Lyapunonv matrix for KF
@@ -135,7 +134,7 @@ disp(newline + "Observer eigenvalues (poles): ")
 eig_AL=eig(AL)'
 
 disp(newline + "Press any key to continue" + newline)
-pause; 
+%pause; 
 
 %% MPC setting
 % use same Q, R, and P from LQR
