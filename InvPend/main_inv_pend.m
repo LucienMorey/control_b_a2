@@ -31,7 +31,7 @@ noise = 1;  %Enable measurement output noise
 controller = 2; %1: LQR
                 %2:   MPC
                 
-N=10;            % Prediction Horizon (increase as required it)
+N=1;            % Prediction Horizon (increase as required it)
 
 animation = 0;  % 1: Animate the inverter pendulum
 
