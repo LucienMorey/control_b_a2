@@ -28,12 +28,15 @@ obs = 1;    % 0: without  Observer, i.e., -F*x
 
 noise = 1;  %Enable measurement output noise
 
-controller = 1; %1: LQR
+controller = 2; %1: LQR
                 %2:   MPC
                 
-N=1;            % Prediction Horizon (increase as required it)
+N=10;            % Prediction Horizon (increase as required it)
 
 animation = 0;  % 1: Animate the inverter pendulum
+
+% set this to zero to saturate the input at 15
+q_1_3 = 1;
 
 %% Input and State Constraints for MPC
 % not required for LQR
@@ -101,9 +104,11 @@ C=sys_dt.C;
 %% LQR design
 %tune your weighting matrices for your controller
 Q=diag([22.0 2.0 20.0 8.1]);
-Q=diag([5.0 0.0 1.0 0.0]);
 R= 0.4;
-R=0.1;
+if (q_1_3 > 0)
+    R=0.1;
+    Q=diag([5.0 0.0 1.0 0.0]);
+end
 
 disp("LQR Gain Matrix: " + newline)
 [K,P]=dlqr(A,B,Q,R)
@@ -122,9 +127,11 @@ end
 
 %tune your weighting matrices for your Kalman Filter
 Qf=diag([1e-4, 1e-08, 1e-20, 1e-08]);
-Qf=0.0000001*eye(4,4);
 Rf = diag([0.0290, 1.2900e-06]); %The diagonal of matrix Rf is the sensores covariance
 
+if (q_1_3 > 0)
+    Qf=0.0000001*eye(4,4);
+end
 [Pf,po_dt,Kf_t] = dare(A',C',Qf,Rf,[],[]);
 %Pf: Lyapunonv matrix for KF
 %po_dt: discrete-time observation eigenvalues
@@ -146,12 +153,39 @@ disp(newline + "Press any key to continue" + newline)
 % matrices automatically 
 
 %Expanded weighting matrices
-QN=rand(N*n,N*n);    
-RN=rand(N*m,N*m);
+
+% preallocate size of matrix
+QN= zeros(N*n,N*n);
+% loop up to last grid
+for i = 1:N-1
+    QN(1+(i-1)*n:i*n,1+(i-1)*n:i*n) = Q;
+end
+% assign the last grid the proper value
+QN(1+(N-1)*n:N*n,1+(N-1)*n:N*n) = P;
+
+% preallocate
+RN= zeros(N*m, N*m);
+% create block diagonal
+for i = 1:N
+    RN(1+(i-1)*m:i*m,1+(i-1)*m:i*m) = R;
+end
+
 
 %Expanded system matrices 
-Lambda=rand(N*n,n); 
-Phi=rand(N*n,N*m);
+Lambda=zeros(N*n,n);
+for i = 1:N
+    Lambda(1+(i-1)*n:i*n,1:n) = A^i;
+end
+
+Phi=zeros(N*n,N*m);
+for i = 1:N
+    Phi(1 +(i-1)*n:i*n,i) = B;
+    j = i+1;
+    while (j <= N)
+        Phi(1+(j-1)*n:j*n,i) = A^(j-1)*B;
+        j=j+1;
+    end
+end
 
 %Cost function matrices: 
 %W and F are correct provided that Phi, Lambda, QN,and RN are also correct
@@ -163,16 +197,18 @@ F=Phi'*QN*Lambda;
 if (N<1)
     N=1;
 end
-Umax=[];
-Umin=[];
-Xmax=[];
-Xmin=[];
-for k=1:N %loop to form the 
-    Umax=[Umax;umax]; 
-    Umin=[Umin;umin];
-
-    Xmax=[Xmax;xmax];
-    Xmin=[Xmin;xmin];
+Umax=[15];
+Umin=[-15];
+Xmax=[[10;5;10;10]];
+Xmin=[[-10;-5;-10;-10]];
+if N > 1
+    for k=2:N %loop to form the 
+        Umax=[Umax;umax]; 
+        Umin=[Umin;umin];
+    
+        Xmax=[Xmax;xmax];
+        Xmin=[Xmin;xmin];
+    end
 end
 
 %Inequality constraint  AN*U(k) < bN
