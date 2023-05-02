@@ -100,8 +100,10 @@ C=sys_dt.C;
 
 %% LQR design
 %tune your weighting matrices for your controller
-Q=diag([10 1 10 1]);
-R= 0.5;
+Q=diag([22.0 2.0 20.0 8.1]);
+Q=diag([5.0 0.0 1.0 0.0]);
+R= 0.4;
+R=0.1;
 
 disp("LQR Gain Matrix: " + newline)
 [K,P]=dlqr(A,B,Q,R)
@@ -119,7 +121,8 @@ if (rank_OM==n)
 end
 
 %tune your weighting matrices for your Kalman Filter
-Qf=diag([0.4, 1e-08, 1, 1e-08]);
+Qf=diag([1e-4, 1e-08, 1e-20, 1e-08]);
+Qf=0.0000001*eye(4,4);
 Rf = diag([0.0290, 1.2900e-06]); %The diagonal of matrix Rf is the sensores covariance
 
 [Pf,po_dt,Kf_t] = dare(A',C',Qf,Rf,[],[]);
