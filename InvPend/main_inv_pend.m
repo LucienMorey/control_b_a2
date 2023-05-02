@@ -46,8 +46,8 @@ umax=15;
 theta_max=3*pi/180;            
 theta_min=-theta_max;
 
-xmin=[-10000;-10000;theta_min;-10000];    %Large number implies no constraint
-xmax=[10000;10000;theta_max;10000];       %Large number implies no constraint
+xmin=[-5;-2;theta_min;-10];    %Large number implies no constraint
+xmax=[5;2;theta_max;10];       %Large number implies no constraint
 
 %% Initial Condition
 x_o = 0;                    %cart position 
@@ -197,18 +197,17 @@ F=Phi'*QN*Lambda;
 if (N<1)
     N=1;
 end
-Umax=[15];
-Umin=[-15];
-Xmax=[[10;5;10;10]];
-Xmin=[[-10;-5;-10;-10]];
-if N > 1
-    for k=2:N %loop to form the 
-        Umax=[Umax;umax]; 
-        Umin=[Umin;umin];
+Umax=[];
+Umin=[];
+Xmax=[];
+Xmin=[];
+
+for k=1:N %loop to form the 
+    Umax=[Umax;umax]; 
+    Umin=[Umin;umin];
     
-        Xmax=[Xmax;xmax];
-        Xmin=[Xmin;xmin];
-    end
+    Xmax=[Xmax;xmax];
+    Xmin=[Xmin;xmin];
 end
 
 %Inequality constraint  AN*U(k) < bN
