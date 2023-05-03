@@ -180,10 +180,8 @@ end
 Phi=zeros(N*n,N*m);
 for i = 1:N
     Phi(1 +(i-1)*n:i*n,i) = B;
-    j = i+1;
-    while (j <= N)
-        Phi(1+(j-1)*n:j*n,i) = A^(j-1)*B;
-        j=j+1;
+    for j = N:-1:i+1
+        Phi(1+(j-1)*n:j*n,i) = A^(j-i)*B;
     end
 end
 
