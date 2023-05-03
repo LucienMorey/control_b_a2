@@ -46,8 +46,8 @@ umax=15;
 theta_max=3*pi/180;            
 theta_min=-theta_max;
 
-xmin=[-5;-2;theta_min;-10];    %Large number implies no constraint
-xmax=[5;2;theta_max;10];       %Large number implies no constraint
+xmin=[-10000;-10000;theta_min;-10000];    %Large number implies no constraint
+xmax=[10000;10000;theta_max;10000];       %Large number implies no constraint
 
 %% Initial Condition
 x_o = 0;                    %cart position 
