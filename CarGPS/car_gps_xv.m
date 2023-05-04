@@ -52,9 +52,43 @@ sim('sim_car_gps_xv.slx')
 %% plot
 disp('Plotting...')
 
-figure(111)
 %% Add you plots here
-plot(xc,yc,"r-",xc_hat, yc_hat, "bo");
-figure(112)
-plot(time, vx, "r-", time, vx_hat, "bo", time, vx_n, "kx");
-legend()
+figure(101)
+plot(xc_n, yc_n, 'cyan', xc,yc,"r-",xc_hat, yc_hat, "k");
+grid on
+legend('Measurement', 'Ground Truth', 'Estimation' );
+ylabel('y(m)');
+xlabel('x(m)');
+
+figure(102);
+subplot(211)
+plot(time, xc_n, 'cyanx', time, xc, "r", time, xc_hat, 'k');
+legend('Measurement', 'Ground Truth', 'Estimation')
+ylabel('x(m)')
+grid on
+subplot(212)
+plot(time, yc_n, 'cyanx', time, yc, "r", time, yc_hat, 'k');
+legend('Measurement', 'Ground Truth', 'Estimation')
+ylabel('y(m)');
+xlabel('time(s)')
+grid on
+
+figure(103);
+error = sqrt((xc-xc_hat).^2 + (yc-yc_hat).^2);
+plot(time, error);
+xlabel('time(s)');
+ylabel('Position Error(m)');
+grid on
+
+figure(104);
+subplot(211)
+plot(time, vx_n, 'cyanx', time, vx, "r", time, vx_hat, 'k');
+legend('Measurement', 'Ground Truth', 'Estimation')
+ylabel('$v_x(m)$')
+grid on
+subplot(212)
+plot(time, vy_n, 'cyanx', time, vy, "r", time, vy_hat, 'k');
+legend('Measurement', 'Ground Truth', 'Estimation')
+ylabel('$v_y(m)$');
+xlabel('time(s)')
+grid on
