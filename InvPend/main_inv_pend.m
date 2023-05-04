@@ -28,10 +28,10 @@ obs = 1;    % 0: without  Observer, i.e., -F*x
 
 noise = 1;  %Enable measurement output noise
 
-controller = 1; %1: LQR
+controller = 2; %1: LQR
                 %2:   MPC
                 
-N=13;            % Prediction Horizon (increase as required it)
+N=15;            % Prediction Horizon (increase as required it)
 
 animation = 0;  % 1: Animate the inverter pendulum
 
@@ -39,6 +39,9 @@ animation = 0;  % 1: Animate the inverter pendulum
 provided_matrices = 1;
 % make this non zero to saturate the lqr input
 saturate = 1;
+
+% multi sim
+multi_sim = 0;
 
 %% Input and State Constraints for MPC
 % not required for LQR
@@ -148,80 +151,8 @@ eig_AL=eig(AL)'
 disp(newline + "Press any key to continue" + newline)
 %pause; 
 
-%% MPC setting
-% use same Q, R, and P from LQR
-
-% Implement here an algorithm that allows you to compute all the required
-% matrices automatically 
-
-%Expanded weighting matrices
-
-% preallocate size of matrix
-QN= zeros(N*n,N*n);
-% loop up to last grid
-for i = 1:N-1
-    QN(1+(i-1)*n:i*n,1+(i-1)*n:i*n) = Q;
-end
-% assign the last grid the proper value
-QN(1+(N-1)*n:N*n,1+(N-1)*n:N*n) = P;
-
-% preallocate
-RN= zeros(N*m, N*m);
-% create block diagonal
-for i = 1:N
-    RN(1+(i-1)*m:i*m,1+(i-1)*m:i*m) = R;
-end
-
-
-%Expanded system matrices 
-Lambda=zeros(N*n,n);
-for i = 1:N
-    Lambda(1+(i-1)*n:i*n,1:n) = A^i;
-end
-
-Phi=zeros(N*n,N*m);
-for i = 1:N
-    Phi(1 +(i-1)*n:i*n,i) = B;
-    for j = N:-1:i+1
-        Phi(1+(j-1)*n:j*n,i) = A^(j-i)*B;
-    end
-end
-
-%Cost function matrices: 
-%W and F are correct provided that Phi, Lambda, QN,and RN are also correct
-W=Phi'*QN*Phi+RN;
-W=(W+W')/2; %to ensure symmetry, i.e., W=W'
-F=Phi'*QN*Lambda;
-
-%Bound Constraint
-if (N<1)
-    N=1;
-end
-Umax=[];
-Umin=[];
-Xmax=[];
-Xmin=[];
-
-for k=1:N %loop to form the 
-    Umax=[Umax;umax]; 
-    Umin=[Umin;umin];
-    
-    Xmax=[Xmax;xmax];
-    Xmin=[Xmin;xmin];
-end
-
-%Inequality constraint  AN*U(k) < bN
-% This matrix is correct, provided you have properly computed Phi
-% Therefore, do not change it.
-INm=eye(N*m);
-AN=[INm;
-   -INm;
-    Phi;
-   -Phi];
-
-%% bN must be computed inside the controller
-
- 
+%% MPC MATRIX GENERATION
+gen_mpc_matrices;
 
 %% Simulation
 disp(newline + "*******************************")
@@ -248,6 +179,23 @@ else
             save('data_MPC.mat');
             plot_MPC;
         %end
+
+        if multi_sim > 0
+            multi_sim_data_xc = xc_hat(:,1);
+            multi_sim_data_theta = theta_hat(:,1);
+            for i = 1:6
+                N = N+1;
+                delete xc_hat;
+                delete theta_hat;
+                gen_mpc_matrices;
+                fprintf("Simulating MPC case for N = %d...\n", N);
+                sim('sim_2023_A2_inv_pend_OPT.slx');
+                multi_sim_data_xc = horzcat(multi_sim_data_xc, xc_hat(:,1));
+                multi_sim_data_theta = horzcat(multi_sim_data_theta, theta_hat(:,1));
+                
+            end
+            plot_MPC_MULTI;
+        end
     end
 end
 warning('on','all')

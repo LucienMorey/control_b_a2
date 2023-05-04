@@ -64,12 +64,30 @@ xticks(0:5:60);
 subplot(313)
 plot(time,theta,time,theta_hat)
 hold on
-plot([0 60], [-15 -15],'--k')
-plot([0 60], [15 15],'--k')
+plot([0 60], [-3 -3],'--k')
+plot([0 60], [3 3],'--k')
 hold off
 ylabel('$\theta~ (deg)$','fontsize',16,'interpreter','latex')
 xlabel('Time (s)','fontsize',16,'interpreter','latex')
 legend('$\theta(t)$','$\hat{\theta}(t)$','fontsize',16,'interpreter','latex')
 grid
 xticks(0:5:60);
+
+figure(2023)
+
+
+subplot(211)
+plot(time,xc, time,xc_hat)
+ylabel('$x_c(m)$','fontsize',16,'interpreter','latex')
+legend('$x_c(t)$','$\hat{x_c}(t)$','fontsize',16,'interpreter','latex')
+axis([0 10 -2 2])
+grid
+title('Filter Convergence','fontsize',16,'interpreter','latex')
+
+subplot(212)
+plot(time,theta, time,theta_hat)
+ylabel('$\theta(deg)$','fontsize',16,'interpreter','latex')
+legend('$\theta(t)$','$\hat{\theta}(t)$','fontsize',16,'interpreter','latex')
+axis([0 10 -8 8])
+grid
 
