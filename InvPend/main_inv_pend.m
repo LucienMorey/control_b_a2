@@ -28,7 +28,7 @@ obs = 1;    % 0: without  Observer, i.e., -F*x
 
 noise = 1;  %Enable measurement output noise
 
-controller = 2; %1: LQR
+controller = 1; %1: LQR
                 %2:   MPC
                 
 N=15;            % Prediction Horizon (increase as required it)
@@ -38,7 +38,7 @@ animation = 0;  % 1: Animate the inverter pendulum
 % make this non zero to use the specified matrices (q.1.3 and beyond)
 provided_matrices = 1;
 % make this non zero to saturate the lqr input
-saturate = 1;
+saturate = 0;
 
 % multi sim
 multi_sim = 0;
@@ -55,7 +55,7 @@ xmin=[-10000;-10000;theta_min;-10000];    %Large number implies no constraint
 xmax=[10000;10000;theta_max;10000];       %Large number implies no constraint
 
 %% Initial Condition
-x_o = 0;                    %cart position 
+x_o = -1;                    %cart position 
 xsp_o = 0;                  %cart speed
 th_o = 0;                   %0: pendulum vertically pointing upwards
                             %pi: pendulum vertically pointing downwards
