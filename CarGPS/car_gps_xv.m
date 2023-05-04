@@ -62,12 +62,12 @@ xlabel('x(m)');
 
 figure(102);
 subplot(211)
-plot(time, xc_n, 'cyanx', time, xc, "r", time, xc_hat, 'k');
+plot(time, xc_n, 'cyan', time, xc, "r", time, xc_hat, 'k');
 legend('Measurement', 'Ground Truth', 'Estimation')
 ylabel('x(m)')
 grid on
 subplot(212)
-plot(time, yc_n, 'cyanx', time, yc, "r", time, yc_hat, 'k');
+plot(time, yc_n, 'cyan', time, yc, "r", time, yc_hat, 'k');
 legend('Measurement', 'Ground Truth', 'Estimation')
 ylabel('y(m)');
 xlabel('time(s)')
@@ -82,12 +82,12 @@ grid on
 
 figure(104);
 subplot(211)
-plot(time, vx_n, 'cyanx', time, vx, "r", time, vx_hat, 'k');
+plot(time, vx_n, 'cyan', time, vx, "r", time, vx_hat, 'k');
 legend('Measurement', 'Ground Truth', 'Estimation')
 ylabel('$v_x(m)$')
 grid on
 subplot(212)
-plot(time, vy_n, 'cyanx', time, vy, "r", time, vy_hat, 'k');
+plot(time, vy_n, 'cyan', time, vy, "r", time, vy_hat, 'k');
 legend('Measurement', 'Ground Truth', 'Estimation')
 ylabel('$v_y(m)$');
 xlabel('time(s)')
