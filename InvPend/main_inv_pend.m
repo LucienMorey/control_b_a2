@@ -28,15 +28,17 @@ obs = 1;    % 0: without  Observer, i.e., -F*x
 
 noise = 1;  %Enable measurement output noise
 
-controller = 2; %1: LQR
+controller = 1; %1: LQR
                 %2:   MPC
                 
 N=13;            % Prediction Horizon (increase as required it)
 
 animation = 0;  % 1: Animate the inverter pendulum
 
-% set this to zero to saturate the input at 15
-q_1_3 = 1;
+% make this non zero to use the specified matrices (q.1.3 and beyond)
+provided_matrices = 1;
+% make this non zero to saturate the lqr input
+saturate = 1;
 
 %% Input and State Constraints for MPC
 % not required for LQR
@@ -105,7 +107,7 @@ C=sys_dt.C;
 %tune your weighting matrices for your controller
 Q=diag([22.0 2.0 20.0 8.1]);
 R= 0.4;
-if (q_1_3 > 0)
+if (provided_matrices > 0)
     R=0.1;
     Q=diag([5.0 0.0 1.0 0.0]);
 end
@@ -129,7 +131,7 @@ end
 Qf=diag([1e-4, 1e-08, 1e-20, 1e-08]);
 Rf = diag([0.0290, 1.2900e-06]); %The diagonal of matrix Rf is the sensores covariance
 
-if (q_1_3 > 0)
+if (provided_matrices > 0)
     Qf=0.0000001*eye(4,4);
 end
 [Pf,po_dt,Kf_t] = dare(A',C',Qf,Rf,[],[]);
